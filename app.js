@@ -11,6 +11,14 @@ const session = require('express-session');
 
 const MongoStore = require('connect-mongo');
 
+const isLoggedIn = (req, res, next) => {
+    if(!req.session.currentUser) {
+        res.redirect('/login');
+    } else {
+        next();
+    }
+};
+
 // init database
 
 const mongoConnection = require('./db/db.config')

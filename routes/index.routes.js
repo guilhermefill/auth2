@@ -1,14 +1,19 @@
 const router = require('express').Router();
 
+const isLoggedIn = (req, res, next) => {
+    if(!req.session.currentUser) {
+        res.redirect('auth/login');
+    } else {
+        next();
+    }
+};
+
 router.get('/', (req, res, next) => {
     res.render('index');
 });
 
-router.get('/welcome', (req, res) => {
+router.get('/welcome', isLoggedIn,  (req, res) => {
     const user = req.session.currentUser;
-    if (!user) {
-        res.redirect('/auth/login');
-    }
     res.render('user/welcome', { user })
 });
 
@@ -20,6 +25,6 @@ router.get('/logout', (req, res) => {
             res.redirect('auth/login');
         }
     });
-})
+});
 
 module.exports = router;
