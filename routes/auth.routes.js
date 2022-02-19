@@ -33,11 +33,28 @@ router.post('/signup', (req, res) => {
         .then(() => { res.redirect('/') })
         .catch(error => {
             if (error instanceof mongoose.Error.ValidationError) {
-                res.status(500).render('auth/signup', {errorMessage: error.message})
-            } else if (error.code === 11000){
-                res.status(500).render('auth/signup', {errorMessage: 'This username is already taken'})
+                res.status(500).render('auth/signup', { errorMessage: error.message })
+            } else if (error.code === 11000) {
+                res.status(500).render('auth/signup', { errorMessage: 'This username is already taken' })
             }
         });
+});
+
+router.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    User.findOne({ username })
+        .then(user => {
+            if (!user) {
+                res.render('auth/login', { errorMessage: 'User not found' });
+                return
+            } else if (bcrypt.compareSync(password, user.password)) {
+                req.session.currentUser = user;
+                res.redirect('/welcome');
+            } else {
+                res.render('auth/login', { errorMessage: 'Incorrect credentials' });
+            }
+        })
+        .catch(error => console.log(error));
 });
 
 module.exports = router;
