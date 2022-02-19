@@ -15,9 +15,18 @@ body {
 
 .row {
     display: flex;
+    flex-direction: column;
 }
 
 .content {
     width: 300px;
 }
 
+.error-form {
+    margin-top: 0;
+    background-color: tomato;
+    color: #fff;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}

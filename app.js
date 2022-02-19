@@ -18,7 +18,7 @@ mongoConnection();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs')
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname,  "public")));
 // Last, but not least, we will have to define the routes in the app.js file. We will mount our authentication routes on the / path.
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 
 const User = require('../models/User.model')
 
@@ -15,6 +16,12 @@ router.get('/signup', (req, res) => {
 
 router.post('/signup', (req, res) => {
     const { username, password } = req.body;
+    // if(!username.length || !password.length) {
+    //     res.render('auth/signup', {
+    //         errorMessage: 'Please provide username and password.'
+    //     });
+    //     return
+    // };
     bcrypt.genSalt(saltRound)
         .then(salt => bcrypt.hash(password, salt))
         .then(hash => {
@@ -24,7 +31,13 @@ router.post('/signup', (req, res) => {
             })
         })
         .then(() => { res.redirect('/') })
-        .catch(error => console.log(error));
+        .catch(error => {
+            if (error instanceof mongoose.Error.ValidationError) {
+                res.status(500).render('auth/signup', {errorMessage: error.message})
+            } else if (error.code === 11000){
+                res.status(500).render('auth/signup', {errorMessage: 'This username is already taken'})
+            }
+        });
 });
 
 module.exports = router;
