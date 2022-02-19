@@ -12,4 +12,14 @@ router.get('/welcome', (req, res) => {
     res.render('user/welcome', { user })
 });
 
+router.get('/logout', (req, res) => {
+    req.session.destroy(error => {
+        if(error) {
+            console.log(error);
+        } else {
+            res.redirect('auth/login');
+        }
+    });
+})
+
 module.exports = router;
